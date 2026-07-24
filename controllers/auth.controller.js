@@ -80,8 +80,6 @@ const signup = async (req, res) => {
  */
 const login = async (req, res) => {
   try {
-     console.log("✅ Login route hit");
-    console.log("Request Body:", req.body);
     const { email, password } = req.body;
 
     if (!email || !password) {
