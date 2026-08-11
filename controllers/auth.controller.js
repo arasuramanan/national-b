@@ -212,8 +212,8 @@ const logout = async (req, res) => {
     }
 
     res
-      .clearCookie("accessToken")
-      .clearCookie("refreshToken")
+      .clearCookie("accessToken", accessCookieOptions)
+      .clearCookie("refreshToken", refreshCookieOptions)
       .status(200)
       .json({
         success: true,
@@ -233,9 +233,18 @@ const logout = async (req, res) => {
  */
 const getCurrentUser = async (req, res) => {
   try {
+    res.set("Cache-Control", "no-store");
+
     const user = await User.findById(req.user.id).select(
       "-password -refreshToken"
     );
+
+    if (!user) {
+      return res.status(401).json({
+        success: false,
+        message: "User not found",
+      });
+    }
 
     res.status(200).json({
       success: true,
