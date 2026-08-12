@@ -27,7 +27,11 @@ router.post('/detailsnewform', protect, async (req, res) => {
       ipAddress: req.ip,
     });
 
-    res.send("Detail Created Successfully");
+    res.status(201).json({
+    success: true,
+    message: "Detail Created Successfully",
+    data: newdetail,
+        });
     } catch (error) {
         console.error("Create UPSI Error:", error);
         return res.status(400).json(error);

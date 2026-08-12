@@ -1,6 +1,6 @@
 const pdfmake = require("pdfmake");
 const Details = require("../models/details.models");
-
+const ExcelJS = require("exceljs");
 const path = require("path");
 
 // Register fonts
@@ -182,6 +182,188 @@ const exportUPSIToPDF = async (req, res, next) => {
   }
 };
 
+
+
+// ================================
+// EXCEL EXPORT
+// ================================
+
+const exportUPSIToExcel = async (req, res, next) => {
+  try {
+    const details = await Details.find()
+      .sort({ DateofSharing: -1 })
+      .lean();
+
+    if (!details || details.length === 0) {
+      return res.status(404).json({
+        success: false,
+        message: "No data available to export",
+      });
+    }
+
+    const workbook = new ExcelJS.Workbook();
+
+    const worksheet = workbook.addWorksheet("UPSI Details");
+
+    worksheet.columns = [
+      {
+        header: "Name of UPSI",
+        key: "NameoftheUPSI",
+        width: 25,
+      },
+      {
+        header: "Info Shared By",
+        key: "InfoSharedBy",
+        width: 25,
+      },
+      {
+        header: "PAN Number 1",
+        key: "PANNumber1",
+        width: 20,
+      },
+      {
+        header: "Information Shared In Capacity 1",
+        key: "InformationSharedInCapacity1",
+        width: 30,
+      },
+      {
+        header: "Designation 1",
+        key: "Designation1",
+        width: 25,
+      },
+      {
+        header: "Info Shared To",
+        key: "InfoSharedTo",
+        width: 25,
+      },
+      {
+        header: "PAN Number 2",
+        key: "PANNumber2",
+        width: 20,
+      },
+      {
+        header: "Information Shared In Capacity 2",
+        key: "InformationSharedInCapacity2",
+        width: 30,
+      },
+      {
+        header: "Designation 2",
+        key: "Designation2",
+        width: 30,
+      },
+      {
+        header: "Type of Organization",
+        key: "TypeofOrganization",
+        width: 25,
+      },
+      {
+        header: "Organization",
+        key: "NameoftheOrganization",
+        width: 30,
+      },
+      {
+        header: "Date",
+        key: "DateofSharing",
+        width: 18,
+      },
+      {
+        header: "Particular",
+        key: "ParticularofInfoShared",
+        width: 30,
+      },
+      {
+        header: "Purpose",
+        key: "PurposeofSharing",
+        width: 30,
+      },
+      {
+        header: "Mode",
+        key: "ModeofSharing",
+        width: 20,
+      },
+      {
+        header: "Time",
+        key: "TimeofSharing",
+        width: 15,
+      },
+    ];
+
+    details.forEach((item) => {
+      worksheet.addRow({
+        NameoftheUPSI: item.NameoftheUPSI || "",
+        InfoSharedBy: item.InfoSharedBy || "",
+        PANNumber1: item.PANNumber1 || "",
+        InformationSharedInCapacity1:
+          item.InformationSharedInCapacity1 || "",
+        Designation1: item.Designation1 || "",
+        InfoSharedTo: item.InfoSharedTo || "",
+        PANNumber2: item.PANNumber2 || "",
+        InformationSharedInCapacity2:
+          item.InformationSharedInCapacity2 || "",
+        Designation2: item.Designation2 || "",
+        TypeofOrganization: item.TypeofOrganization || "",
+        NameoftheOrganization: item.NameoftheOrganization || "",
+        DateofSharing: item.DateofSharing
+          ? new Date(item.DateofSharing).toISOString().split("T")[0]
+          : "",
+        ParticularofInfoShared: item.ParticularofInfoShared || "",
+        PurposeofSharing: item.PurposeofSharing || "",
+        ModeofSharing: item.ModeofSharing || "",
+        TimeofSharing: item.TimeofSharing || "",
+      });
+    });
+
+    // Header styling
+    const headerRow = worksheet.getRow(1);
+
+    headerRow.font = {
+      bold: true,
+    };
+
+    headerRow.alignment = {
+      vertical: "middle",
+      horizontal: "center",
+      wrapText: true,
+    };
+
+    headerRow.fill = {
+      type: "pattern",
+      pattern: "solid",
+      fgColor: {
+        argb: "E5E5E5",
+      },
+    };
+
+    // Data alignment
+    worksheet.eachRow((row, rowNumber) => {
+      if (rowNumber > 1) {
+        row.alignment = {
+          vertical: "top",
+          wrapText: true,
+        };
+      }
+    });
+
+    res.setHeader(
+      "Content-Type",
+      "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+    );
+
+    res.setHeader(
+      "Content-Disposition",
+      'attachment; filename="UPSI_Details_Report.xlsx"'
+    );
+
+    await workbook.xlsx.write(res);
+
+    res.end();
+  } catch (error) {
+    console.error("UPSI Excel Export Error:", error);
+    next(error);
+  }
+};
+
 module.exports = {
   exportUPSIToPDF,
+  exportUPSIToExcel,
 };
