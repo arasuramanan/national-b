@@ -168,6 +168,9 @@ const exportAuditTrailToExcel = async (req, res, next) => {
 
     headerRow.font = {
       bold: true,
+        color: {
+      argb: "000000",
+  },
     };
 
     headerRow.alignment = {
@@ -183,6 +186,8 @@ const exportAuditTrailToExcel = async (req, res, next) => {
         argb: "E5E5E5",
       },
     };
+
+    headerRow.height = 30;
 
     // ================================
     // DATA ALIGNMENT
