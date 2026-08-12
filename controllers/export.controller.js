@@ -38,8 +38,8 @@ const exportUPSIToPDF = async (req, res, next) => {
       });
     }
 
-    const body = [
-      [
+  const body = [
+  [
     { text: "S.No.", bold: true },
     { text: "Name of UPSI", bold: true },
     { text: "Info Shared By", bold: true },
@@ -57,32 +57,32 @@ const exportUPSIToPDF = async (req, res, next) => {
     { text: "Purpose", bold: true },
     { text: "Mode", bold: true },
     { text: "Time", bold: true },
-      ],
-    ];
+  ],
+];
 
-    details.forEach((item) => {
-      body.push([
-        index + 1,
-        item.NameoftheUPSI || "",
-        item.InfoSharedBy || "",
-        item.PANNumber1 || "",
-        item.InformationSharedInCapacity1 || "",
-        item.Designation1 || "",
-        item.InfoSharedTo || "",
-        item.PANNumber2 || "",
-        item.InformationSharedInCapacity2 || "",
-        item.Designation2 || "",
-        item.TypeofOrganization || "",
-        item.NameoftheOrganization || "",
-        item.DateofSharing
-          ? new Date(item.DateofSharing).toISOString().split("T")[0]
-          : "",
-        item.ParticularofInfoShared || "",
-        item.PurposeofSharing || "",
-        item.ModeofSharing || "",
-        item.TimeofSharing || "",
-      ]);
-    });
+details.forEach((item, index) => {
+  body.push([
+    index + 1,
+    item.NameoftheUPSI || "",
+    item.InfoSharedBy || "",
+    item.PANNumber1 || "",
+    item.InformationSharedInCapacity1 || "",
+    item.Designation1 || "",
+    item.InfoSharedTo || "",
+    item.PANNumber2 || "",
+    item.InformationSharedInCapacity2 || "",
+    item.Designation2 || "",
+    item.TypeofOrganization || "",
+    item.NameoftheOrganization || "",
+    item.DateofSharing
+      ? new Date(item.DateofSharing).toISOString().split("T")[0]
+      : "",
+    item.ParticularofInfoShared || "",
+    item.PurposeofSharing || "",
+    item.ModeofSharing || "",
+    item.TimeofSharing || "",
+  ]);
+});
 
     const documentDefinition = {
       pageSize: "A2",
@@ -106,6 +106,7 @@ const exportUPSIToPDF = async (req, res, next) => {
             headerRows: 1,
 
             widths: [
+              35,
               "*",
               "*",
               "*",
@@ -195,10 +196,12 @@ console.log(
   console.error("Full error:", error);
   console.error("============================================");
 
-  next(error);
+  return res.status(500).json({
+    success: false,
+    message: error.message,
+    error: error.stack,
+  });
 }
-};
-
 
 
 // ================================
@@ -310,7 +313,7 @@ const exportUPSIToExcel = async (req, res, next) => {
       },
     ];
 
-    details.forEach((item) => {
+    details.forEach((item, index) => {
       worksheet.addRow({
         serialNumber: index + 1,
         NameoftheUPSI: item.NameoftheUPSI || "",
