@@ -10,4 +10,6 @@ const router = express.Router();
 
 router.get("/pdf", protect, exportUPSIToPDF);
 
+router.get("/excel", protect, exportUPSIToExcel);
+
 module.exports = router;
