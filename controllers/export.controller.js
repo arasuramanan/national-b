@@ -40,22 +40,22 @@ const exportUPSIToPDF = async (req, res, next) => {
 
     const body = [
       [
-        "Name of UPSI",
-        "Info Shared By",
-        "PAN 1",
-        "Capacity 1",
-        "Designation 1",
-        "Info Shared To",
-        "PAN 2",
-        "Capacity 2",
-        "Designation 2",
-        "Organization Type",
-        "Organization",
-        "Date",
-        "Particular",
-        "Purpose",
-        "Mode",
-        "Time",
+    { text: "Name of UPSI", bold: true },
+    { text: "Info Shared By", bold: true },
+    { text: "PAN 1", bold: true },
+    { text: "Capacity 1", bold: true },
+    { text: "Designation 1", bold: true },
+    { text: "Info Shared To", bold: true },
+    { text: "PAN 2", bold: true },
+    { text: "Capacity 2", bold: true },
+    { text: "Designation 2", bold: true },
+    { text: "Organization Type", bold: true },
+    { text: "Organization", bold: true },
+    { text: "Date", bold: true },
+    { text: "Particular", bold: true },
+    { text: "Purpose", bold: true },
+    { text: "Mode", bold: true },
+    { text: "Time", bold: true },
       ],
     ];
 
@@ -125,18 +125,19 @@ const exportUPSIToPDF = async (req, res, next) => {
             body,
           },
 
-          layout: {
-            hLineWidth: () => 1,
-            vLineWidth: () => 1,
+        layout: {
+      hLineWidth: () => 0,
+      vLineWidth: () => 0,
 
-            hLineColor: () => "#000000",
-            vLineColor: () => "#000000",
+      paddingLeft: () => 4,
+      paddingRight: () => 4,
+      paddingTop: () => 4,
+      paddingBottom: () => 4,
 
-            paddingLeft: () => 4,
-            paddingRight: () => 4,
-            paddingTop: () => 4,
-            paddingBottom: () => 4,
-          },
+      fillColor: (rowIndex) => {
+      return rowIndex === 0 ? "#E5E5E5" : null;
+        },
+      },
         },
       ],
 
