@@ -243,8 +243,9 @@ const exportUPSIToExcel = async (req, res, next) => {
 
     const workbook = new ExcelJS.Workbook();
 
-    const worksheet =
-      workbook.addWorksheet("UPSI Details");
+    const worksheet = workbook.addWorksheet("UPSI Details");
+    console.log("========== UPSI EXCEL VERSION 2 ==========");
+    console.log("Using NEW UPSI Excel export code");
 
     // ================================
     // EXCEL COLUMNS
@@ -400,46 +401,75 @@ const exportUPSIToExcel = async (req, res, next) => {
     });
 
     // ================================
-    // HEADER STYLING
-    // ================================
+// HEADER STYLING
+// ================================
 
-    const headerRow = worksheet.getRow(1);
+const headerRow = worksheet.getRow(1);
 
-    headerRow.font = {
-      bold: true,
-      color: {
-        argb: "000000",
-      },
-    };
+headerRow.font = {
+  bold: true,
+  color: {
+    argb: "000000",
+  },
+};
 
-    headerRow.alignment = {
-      vertical: "middle",
-      horizontal: "center",
+headerRow.alignment = {
+  vertical: "middle",
+  horizontal: "center",
+  wrapText: true,
+};
+
+headerRow.fill = {
+  type: "pattern",
+  pattern: "solid",
+  fgColor: {
+    argb: "E5E5E5",
+  },
+};
+
+headerRow.height = 30;
+
+// ================================
+// TEMPORARY DEBUG LOGS
+// ================================
+
+console.log("========== UPSI EXCEL VERSION 2 ==========");
+console.log("Using NEW UPSI Excel export code");
+
+console.log(
+  "Header bold:",
+  worksheet.getRow(1).font.bold
+);
+
+console.log(
+  "Header fill:",
+  worksheet.getRow(1).fill.fgColor.argb
+);
+
+console.log(
+  "Header alignment:",
+  worksheet.getRow(1).alignment.horizontal
+);
+
+console.log(
+  "First column header:",
+  worksheet.getColumn(1).header
+);
+
+console.log("==========================================");
+
+// ================================
+// DATA ALIGNMENT
+// ================================
+
+worksheet.eachRow((row, rowNumber) => {
+  if (rowNumber > 1) {
+    row.alignment = {
+      vertical: "top",
       wrapText: true,
     };
-
-    headerRow.fill = {
-      type: "pattern",
-      pattern: "solid",
-      fgColor: {
-        argb: "E5E5E5",
-      },
-    };
-
-    headerRow.height = 30;
-
-    // ================================
-    // DATA ALIGNMENT
-    // ================================
-
-    worksheet.eachRow((row, rowNumber) => {
-      if (rowNumber > 1) {
-        row.alignment = {
-          vertical: "top",
-          wrapText: true,
-        };
-      }
-    });
+  }
+});
 
     // ================================
     // RESPONSE
