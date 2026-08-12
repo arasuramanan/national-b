@@ -13,6 +13,7 @@ const employeeRoutes = require("./routes/employees.routes");
 const authRoutes = require("./routes/auth.routes");
 const detailsRoutes = require("./routes/details.routes");
 const auditTrailRoutes = require("./routes/auditTrail.routes");
+const exportRoutes = require("./routes/export.routes");
 
 const app = express();
 
@@ -45,6 +46,7 @@ app.use("/api", employeeRoutes);
 app.use("/api/auth", authRoutes);
 app.use("/api", detailsRoutes);
 app.use("/api", auditTrailRoutes);
+app.use("/api/export", exportRoutes);
 
 // Global Error Handler (Must be the last middleware)
 app.use(errorHandler);
