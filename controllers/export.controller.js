@@ -167,7 +167,17 @@ const exportUPSIToPDF = async (req, res, next) => {
 
     // pdfmake 0.3.x API
     const pdf = pdfmake.createPdf(documentDefinition);
-
+console.log("PDF generation started");
+console.log("Records:", details.length);
+console.log(
+  "Roboto font exists:",
+  require("fs").existsSync(
+    path.join(
+      __dirname,
+      "../node_modules/pdfmake/fonts/Roboto/Roboto-Regular.ttf"
+    )
+  )
+);
     const pdfBuffer = await pdf.getBuffer();
 
     res.set({
@@ -178,10 +188,15 @@ const exportUPSIToPDF = async (req, res, next) => {
     });
 
     res.send(pdfBuffer);
-  } catch (error) {
-    console.error("UPSI PDF Export Error:", error);
-    next(error);
-  }
+} catch (error) {
+  console.error("========== UPSI PDF EXPORT ERROR ==========");
+  console.error("Message:", error.message);
+  console.error("Stack:", error.stack);
+  console.error("Full error:", error);
+  console.error("============================================");
+
+  next(error);
+}
 };
 
 
