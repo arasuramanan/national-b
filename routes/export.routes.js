@@ -2,6 +2,7 @@ const express = require("express");
 
 const {
   exportUPSIToPDF,
+  exportUPSIToExcel,
 } = require("../controllers/export.controller");
 
 const { protect } = require("../middleware/auth.middleware");
