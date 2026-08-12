@@ -400,34 +400,63 @@ const exportUPSIToExcel = async (req, res, next) => {
       });
     });
 
-    // ================================
+  // ================================
 // HEADER STYLING
 // ================================
 
 const headerRow = worksheet.getRow(1);
 
-headerRow.font = {
-  bold: true,
-  color: {
-    argb: "000000",
-  },
-};
-
-headerRow.alignment = {
-  vertical: "middle",
-  horizontal: "center",
-  wrapText: true,
-};
-
-headerRow.fill = {
-  type: "pattern",
-  pattern: "solid",
-  fgColor: {
-    argb: "E5E5E5",
-  },
-};
-
 headerRow.height = 30;
+
+headerRow.eachCell((cell) => {
+  cell.font = {
+    bold: true,
+    color: {
+      argb: "FF000000",
+    },
+  };
+
+  cell.alignment = {
+    vertical: "middle",
+    horizontal: "center",
+    wrapText: true,
+  };
+
+  cell.fill = {
+    type: "pattern",
+    pattern: "solid",
+    fgColor: {
+      argb: "FFE5E5E5",
+    },
+  };
+
+  cell.border = {
+    top: {
+      style: "thin",
+      color: {
+        argb: "FFBFBFBF",
+      },
+    },
+    bottom: {
+      style: "thin",
+      color: {
+        argb: "FFBFBFBF",
+      },
+    },
+    left: {
+      style: "thin",
+      color: {
+        argb: "FFBFBFBF",
+      },
+    },
+    right: {
+      style: "thin",
+      color: {
+        argb: "FFBFBFBF",
+      },
+    },
+  };
+});
 
 // ================================
 // TEMPORARY DEBUG LOGS
