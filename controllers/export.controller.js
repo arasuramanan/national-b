@@ -187,13 +187,17 @@ const exportUPSIToPDF = async (req, res, next) => {
     `;
 
     // Launch Chromium through Puppeteer.
-    browser = await puppeteer.launch({
-      headless: true,
-      args: [
-        "--no-sandbox",
-        "--disable-setuid-sandbox",
-      ],
-    });
+        browser = await puppeteer.launch({
+            headless: true,
+
+    executablePath: puppeteer.executablePath(),
+
+            args: [
+            "--no-sandbox",
+            "--disable-setuid-sandbox",
+            ],
+            });
+            console.log("Puppeteer executable:", puppeteer.executablePath());
 
     const page = await browser.newPage();
 
