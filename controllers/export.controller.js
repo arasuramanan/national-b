@@ -28,7 +28,7 @@ pdfmake.addFonts({
 const exportUPSIToPDF = async (req, res, next) => {
   try {
     const details = await Details.find()
-      .sort({ DateofSharing: -1 })
+      .sort({ _id: 1 })
       .lean();
 
     if (!details || details.length === 0) {
@@ -40,6 +40,7 @@ const exportUPSIToPDF = async (req, res, next) => {
 
     const body = [
       [
+    { text: "S.No.", bold: true },
     { text: "Name of UPSI", bold: true },
     { text: "Info Shared By", bold: true },
     { text: "PAN 1", bold: true },
@@ -61,6 +62,7 @@ const exportUPSIToPDF = async (req, res, next) => {
 
     details.forEach((item) => {
       body.push([
+        index + 1,
         item.NameoftheUPSI || "",
         item.InfoSharedBy || "",
         item.PANNumber1 || "",
@@ -190,9 +192,9 @@ const exportUPSIToPDF = async (req, res, next) => {
 
 const exportUPSIToExcel = async (req, res, next) => {
   try {
-    const details = await Details.find()
-      .sort({ DateofSharing: -1 })
-      .lean();
+   const details = await Details.find()
+          .sort({ _id: 1 })
+            .lean();
 
     if (!details || details.length === 0) {
       return res.status(404).json({
@@ -206,6 +208,11 @@ const exportUPSIToExcel = async (req, res, next) => {
     const worksheet = workbook.addWorksheet("UPSI Details");
 
     worksheet.columns = [
+      {
+          header: "S.No.",
+          key: "serialNumber",
+          width: 10,
+      },
       {
         header: "Name of UPSI",
         key: "NameoftheUPSI",
@@ -290,6 +297,7 @@ const exportUPSIToExcel = async (req, res, next) => {
 
     details.forEach((item) => {
       worksheet.addRow({
+        serialNumber: index + 1,
         NameoftheUPSI: item.NameoftheUPSI || "",
         InfoSharedBy: item.InfoSharedBy || "",
         PANNumber1: item.PANNumber1 || "",
