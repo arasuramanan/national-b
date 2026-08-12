@@ -3,7 +3,10 @@ const Details = require("../models/details.models");
 const ExcelJS = require("exceljs");
 const path = require("path");
 
-// Register fonts
+// ================================
+// REGISTER PDF FONTS
+// ================================
+
 pdfmake.addFonts({
   Roboto: {
     normal: path.join(
@@ -25,6 +28,10 @@ pdfmake.addFonts({
   },
 });
 
+// ================================
+// PDF EXPORT
+// ================================
+
 const exportUPSIToPDF = async (req, res, next) => {
   try {
     const details = await Details.find()
@@ -38,51 +45,53 @@ const exportUPSIToPDF = async (req, res, next) => {
       });
     }
 
-  const body = [
-  [
-    { text: "S.No.", bold: true },
-    { text: "Name of UPSI", bold: true },
-    { text: "Info Shared By", bold: true },
-    { text: "PAN 1", bold: true },
-    { text: "Capacity 1", bold: true },
-    { text: "Designation 1", bold: true },
-    { text: "Info Shared To", bold: true },
-    { text: "PAN 2", bold: true },
-    { text: "Capacity 2", bold: true },
-    { text: "Designation 2", bold: true },
-    { text: "Organization Type", bold: true },
-    { text: "Organization", bold: true },
-    { text: "Date", bold: true },
-    { text: "Particular", bold: true },
-    { text: "Purpose", bold: true },
-    { text: "Mode", bold: true },
-    { text: "Time", bold: true },
-  ],
-];
+    const body = [
+      [
+        { text: "S.No.", bold: true },
+        { text: "Name of UPSI", bold: true },
+        { text: "Info Shared By", bold: true },
+        { text: "PAN 1", bold: true },
+        { text: "Capacity 1", bold: true },
+        { text: "Designation 1", bold: true },
+        { text: "Info Shared To", bold: true },
+        { text: "PAN 2", bold: true },
+        { text: "Capacity 2", bold: true },
+        { text: "Designation 2", bold: true },
+        { text: "Organization Type", bold: true },
+        { text: "Organization", bold: true },
+        { text: "Date", bold: true },
+        { text: "Particular", bold: true },
+        { text: "Purpose", bold: true },
+        { text: "Mode", bold: true },
+        { text: "Time", bold: true },
+      ],
+    ];
 
-details.forEach((item, index) => {
-  body.push([
-    index + 1,
-    item.NameoftheUPSI || "",
-    item.InfoSharedBy || "",
-    item.PANNumber1 || "",
-    item.InformationSharedInCapacity1 || "",
-    item.Designation1 || "",
-    item.InfoSharedTo || "",
-    item.PANNumber2 || "",
-    item.InformationSharedInCapacity2 || "",
-    item.Designation2 || "",
-    item.TypeofOrganization || "",
-    item.NameoftheOrganization || "",
-    item.DateofSharing
-      ? new Date(item.DateofSharing).toISOString().split("T")[0]
-      : "",
-    item.ParticularofInfoShared || "",
-    item.PurposeofSharing || "",
-    item.ModeofSharing || "",
-    item.TimeofSharing || "",
-  ]);
-});
+    details.forEach((item, index) => {
+      body.push([
+        index + 1,
+        item.NameoftheUPSI || "",
+        item.InfoSharedBy || "",
+        item.PANNumber1 || "",
+        item.InformationSharedInCapacity1 || "",
+        item.Designation1 || "",
+        item.InfoSharedTo || "",
+        item.PANNumber2 || "",
+        item.InformationSharedInCapacity2 || "",
+        item.Designation2 || "",
+        item.TypeofOrganization || "",
+        item.NameoftheOrganization || "",
+        item.DateofSharing
+          ? new Date(item.DateofSharing)
+              .toISOString()
+              .split("T")[0]
+          : "",
+        item.ParticularofInfoShared || "",
+        item.PurposeofSharing || "",
+        item.ModeofSharing || "",
+        item.TimeofSharing || "",
+      ]);
+    });
 
     const documentDefinition = {
       pageSize: "A2",
@@ -128,19 +137,21 @@ details.forEach((item, index) => {
             body,
           },
 
-        layout: {
-      hLineWidth: () => 0,
-      vLineWidth: () => 0,
+          layout: {
+            hLineWidth: () => 0,
+            vLineWidth: () => 0,
 
-      paddingLeft: () => 4,
-      paddingRight: () => 4,
-      paddingTop: () => 4,
-      paddingBottom: () => 4,
+            paddingLeft: () => 4,
+            paddingRight: () => 4,
+            paddingTop: () => 4,
+            paddingBottom: () => 4,
 
-      fillColor: (rowIndex) => {
-      return rowIndex === 0 ? "#E5E5E5" : null;
-        },
-      },
+            fillColor: (rowIndex) => {
+              return rowIndex === 0
+                ? "#E5E5E5"
+                : null;
+            },
+          },
         },
       ],
 
@@ -168,17 +179,20 @@ details.forEach((item, index) => {
 
     // pdfmake 0.3.x API
     const pdf = pdfmake.createPdf(documentDefinition);
-console.log("PDF generation started");
-console.log("Records:", details.length);
-console.log(
-  "Roboto font exists:",
-  require("fs").existsSync(
-    path.join(
-      __dirname,
-      "../node_modules/pdfmake/fonts/Roboto/Roboto-Regular.ttf"
-    )
-  )
-);
+
+    console.log("PDF generation started");
+    console.log("Records:", details.length);
+
+    console.log(
+      "Roboto font exists:",
+      require("fs").existsSync(
+        path.join(
+          __dirname,
+          "../node_modules/pdfmake/fonts/Roboto/Roboto-Regular.ttf"
+        )
+      )
+    );
+
     const pdfBuffer = await pdf.getBuffer();
 
     res.set({
@@ -189,21 +203,26 @@ console.log(
     });
 
     res.send(pdfBuffer);
-} catch (error) {
-  console.error("========== UPSI PDF EXPORT ERROR ==========");
-  console.error("Message:", error.message);
-  console.error("Stack:", error.stack);
-  console.error("Full error:", error);
-  console.error("============================================");
+  } catch (error) {
+    console.error(
+      "========== UPSI PDF EXPORT ERROR =========="
+    );
 
-  return res.status(500).json({
-    success: false,
-    message: error.message,
-    error: error.stack,
-  });
-}
+    console.error("Message:", error.message);
+    console.error("Stack:", error.stack);
+    console.error("Full error:", error);
+
+    console.error(
+      "============================================"
+    );
+
+    return res.status(500).json({
+      success: false,
+      message: error.message,
+      error: error.stack,
+    });
+  }
 };
-
 
 // ================================
 // EXCEL EXPORT
@@ -211,9 +230,9 @@ console.log(
 
 const exportUPSIToExcel = async (req, res, next) => {
   try {
-   const details = await Details.find()
-          .sort({ _id: 1 })
-            .lean();
+    const details = await Details.find()
+      .sort({ _id: 1 })
+      .lean();
 
     if (!details || details.length === 0) {
       return res.status(404).json({
@@ -224,13 +243,18 @@ const exportUPSIToExcel = async (req, res, next) => {
 
     const workbook = new ExcelJS.Workbook();
 
-    const worksheet = workbook.addWorksheet("UPSI Details");
+    const worksheet =
+      workbook.addWorksheet("UPSI Details");
+
+    // ================================
+    // EXCEL COLUMNS
+    // ================================
 
     worksheet.columns = [
       {
-          header: "S.No.",
-          key: "serialNumber",
-          width: 10,
+        header: "S.No.",
+        key: "serialNumber",
+        width: 10,
       },
       {
         header: "Name of UPSI",
@@ -314,37 +338,78 @@ const exportUPSIToExcel = async (req, res, next) => {
       },
     ];
 
+    // ================================
+    // ADD DATA
+    // ================================
+
     details.forEach((item, index) => {
       worksheet.addRow({
         serialNumber: index + 1,
-        NameoftheUPSI: item.NameoftheUPSI || "",
-        InfoSharedBy: item.InfoSharedBy || "",
-        PANNumber1: item.PANNumber1 || "",
+
+        NameoftheUPSI:
+          item.NameoftheUPSI || "",
+
+        InfoSharedBy:
+          item.InfoSharedBy || "",
+
+        PANNumber1:
+          item.PANNumber1 || "",
+
         InformationSharedInCapacity1:
           item.InformationSharedInCapacity1 || "",
-        Designation1: item.Designation1 || "",
-        InfoSharedTo: item.InfoSharedTo || "",
-        PANNumber2: item.PANNumber2 || "",
+
+        Designation1:
+          item.Designation1 || "",
+
+        InfoSharedTo:
+          item.InfoSharedTo || "",
+
+        PANNumber2:
+          item.PANNumber2 || "",
+
         InformationSharedInCapacity2:
           item.InformationSharedInCapacity2 || "",
-        Designation2: item.Designation2 || "",
-        TypeofOrganization: item.TypeofOrganization || "",
-        NameoftheOrganization: item.NameoftheOrganization || "",
+
+        Designation2:
+          item.Designation2 || "",
+
+        TypeofOrganization:
+          item.TypeofOrganization || "",
+
+        NameoftheOrganization:
+          item.NameoftheOrganization || "",
+
         DateofSharing: item.DateofSharing
-          ? new Date(item.DateofSharing).toISOString().split("T")[0]
+          ? new Date(item.DateofSharing)
+              .toISOString()
+              .split("T")[0]
           : "",
-        ParticularofInfoShared: item.ParticularofInfoShared || "",
-        PurposeofSharing: item.PurposeofSharing || "",
-        ModeofSharing: item.ModeofSharing || "",
-        TimeofSharing: item.TimeofSharing || "",
+
+        ParticularofInfoShared:
+          item.ParticularofInfoShared || "",
+
+        PurposeofSharing:
+          item.PurposeofSharing || "",
+
+        ModeofSharing:
+          item.ModeofSharing || "",
+
+        TimeofSharing:
+          item.TimeofSharing || "",
       });
     });
 
-    // Header styling
+    // ================================
+    // HEADER STYLING
+    // ================================
+
     const headerRow = worksheet.getRow(1);
 
     headerRow.font = {
       bold: true,
+      color: {
+        argb: "000000",
+      },
     };
 
     headerRow.alignment = {
@@ -361,7 +426,12 @@ const exportUPSIToExcel = async (req, res, next) => {
       },
     };
 
-    // Data alignment
+    headerRow.height = 30;
+
+    // ================================
+    // DATA ALIGNMENT
+    // ================================
+
     worksheet.eachRow((row, rowNumber) => {
       if (rowNumber > 1) {
         row.alignment = {
@@ -370,6 +440,10 @@ const exportUPSIToExcel = async (req, res, next) => {
         };
       }
     });
+
+    // ================================
+    // RESPONSE
+    // ================================
 
     res.setHeader(
       "Content-Type",
@@ -385,10 +459,18 @@ const exportUPSIToExcel = async (req, res, next) => {
 
     res.end();
   } catch (error) {
-    console.error("UPSI Excel Export Error:", error);
+    console.error(
+      "UPSI Excel Export Error:",
+      error
+    );
+
     next(error);
   }
 };
+
+// ================================
+// EXPORTS
+// ================================
 
 module.exports = {
   exportUPSIToPDF,
