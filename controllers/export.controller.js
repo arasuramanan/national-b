@@ -180,18 +180,7 @@ const exportUPSIToPDF = async (req, res, next) => {
     // pdfmake 0.3.x API
     const pdf = pdfmake.createPdf(documentDefinition);
 
-    console.log("PDF generation started");
-    console.log("Records:", details.length);
 
-    console.log(
-      "Roboto font exists:",
-      require("fs").existsSync(
-        path.join(
-          __dirname,
-          "../node_modules/pdfmake/fonts/Roboto/Roboto-Regular.ttf"
-        )
-      )
-    );
 
     const pdfBuffer = await pdf.getBuffer();
 
@@ -244,8 +233,6 @@ const exportUPSIToExcel = async (req, res, next) => {
     const workbook = new ExcelJS.Workbook();
 
     const worksheet = workbook.addWorksheet("UPSI Details");
-    console.log("========== UPSI EXCEL VERSION 2 ==========");
-    console.log("Using NEW UPSI Excel export code");
 
     // ================================
     // EXCEL COLUMNS
@@ -458,34 +445,7 @@ headerRow.eachCell((cell) => {
   };
 });
 
-// ================================
-// TEMPORARY DEBUG LOGS
-// ================================
 
-console.log("========== UPSI EXCEL VERSION 2 ==========");
-console.log("Using NEW UPSI Excel export code");
-
-console.log(
-  "Header bold:",
-  worksheet.getRow(1).font.bold
-);
-
-console.log(
-  "Header fill:",
-  worksheet.getRow(1).fill.fgColor.argb
-);
-
-console.log(
-  "Header alignment:",
-  worksheet.getRow(1).alignment.horizontal
-);
-
-console.log(
-  "First column header:",
-  worksheet.getColumn(1).header
-);
-
-console.log("==========================================");
 
 // ================================
 // DATA ALIGNMENT
